@@ -1,0 +1,109 @@
+# AGENTS.md
+
+## Project identity
+
+This repository is `codex-usage-tray`.
+
+Codex Usage Tray is an unofficial Windows tray app for quickly checking Codex usage limits without opening the Codex app, CLI view, or web dashboard.
+
+Keep the product Codex-first unless the maintainer explicitly asks for a broader provider scope. The internal design may be provider-ready, but do not add Claude, Gemini, Cursor, OpenAI API billing, GitHub Actions quota, or other providers without an explicit task.
+
+Do not rename the product, repository, executable, namespace, or public branding unless explicitly requested.
+
+## Current implementation assumptions
+
+- Main app project: `app/CodexUsageTray.csproj`
+- Current UI stack: Windows Forms tray app
+- Current target framework: check `app/CodexUsageTray.csproj` before changing it
+- Entry point: `app/Program.cs`
+- Tray lifecycle/menu/hotkey wiring: `app/TrayApplicationContext.cs`
+- Popup UI: `app/UsagePopupForm.cs`
+- Codex app-server client: `app/CodexAppServerClient.cs`
+- Rate limit mapping: `app/RateLimitMapper.cs`
+- Project map: `docs/PROJECT_MAP.md`
+- Modernization plan: `docs/MODERNIZATION_PLAN.md`
+
+The app currently launches `codex app-server`, communicates over stdio JSON-RPC, calls `account/rateLimits/read`, and listens for `account/rateLimits/updated`. It should not require a separate OpenAI API key.
+
+## Required workflow
+
+Before editing code:
+
+1. Read this file.
+2. Read `README.md` and `docs/PROJECT_MAP.md`.
+3. Inspect the specific source files affected by the task.
+4. Summarize the intended change and keep it narrowly scoped.
+
+Prefer small, reviewable diffs. Do not perform broad refactors, UI framework rewrites, namespace changes, or provider expansions as part of an unrelated fix.
+
+## Build and verification
+
+Use the smallest relevant command first.
+
+```powershell
+dotnet build app/CodexUsageTray.csproj
+dotnet run --project app/CodexUsageTray.csproj -- --self-test
+```
+
+For UI, tray, hotkey, or popup changes, also report a manual Windows smoke-test checklist covering:
+
+- tray icon appears
+- popup opens from tray click
+- `Ctrl+Alt+U` toggles popup
+- Refresh/Reconnect menu still works
+- pinned popup behavior still works
+- settings persist after restart
+
+If a command fails, report the exact failure. Do not claim verification that was not actually run.
+
+## Modernization policy
+
+Follow `docs/MODERNIZATION_PLAN.md`.
+
+The preferred modernization path is:
+
+1. public-repo hygiene and documentation
+2. Windows Forms app on a supported modern .NET LTS target
+3. architecture/test hardening
+4. public release packaging
+5. optional WinUI 3 prototype only after the current app is stable
+
+Do not migrate to WinUI 3 in the same task as a .NET target upgrade. Treat WinUI 3 as a separate prototype/rewrite phase with its own branch and parity checklist.
+
+## Public repository safety
+
+Never commit:
+
+- secrets, tokens, API keys, cookies, session data, or credential files
+- local absolute paths from a maintainer machine
+- screenshots containing private account information or usage details that were not intentionally redacted
+- generated build outputs such as `bin/`, `obj/`, publish folders, or local installer artifacts
+- telemetry, analytics, or remote logging without explicit approval
+
+Settings should remain local. If settings storage changes, prefer a per-user application data location and document the migration behavior.
+
+## Branding and trademark safety
+
+This is not an official OpenAI project.
+
+Do not use OpenAI logos, official product artwork, or wording that implies affiliation, endorsement, or sponsorship.
+
+Preserve this disclaimer in public-facing documentation when applicable:
+
+> This project is not affiliated with, endorsed by, or sponsored by OpenAI. Codex is a product/service of OpenAI.
+
+## Documentation rules
+
+For user-facing behavior changes, update `README.md` or `docs/` in the same change.
+
+Keep README claims accurate. Do not claim support for providers, platforms, package formats, installers, or auto-update mechanisms that are not implemented.
+
+Public-facing documentation should be in English unless the maintainer explicitly asks otherwise.
+
+## Git behavior
+
+Do not rewrite history.
+Do not force-push.
+Do not change unrelated files.
+Do not add new production dependencies unless the task requires them and the reason is documented.
+Do not generate large binary artifacts unless explicitly requested.
