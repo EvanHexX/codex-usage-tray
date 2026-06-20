@@ -1,18 +1,48 @@
-bin/
-obj/
-**/bin/
-**/obj/
+# Build outputs
+[Bb]in/
+[Oo]bj/
+**/[Bb]in/
+**/[Oo]bj/
+out/
+publish/
+artifacts/
 
-settings.json
+# Visual Studio / Rider / editor state
+.vs/
+.idea/
+.vscode/
 *.user
 *.suo
+*.rsuser
 *.userosscache
 *.sln.docstates
 
-.vs/
-.vscode/
-
+# Test outputs
 TestResults/
 coverage/
+*.trx
+*.coverage
+*.coveragexml
 
+# NuGet artifacts
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Logs and temporary files
 *.log
+*.tmp
+*.temp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Codex/local agent logs
+.codex-log/
+
+# Local app settings
+# Keep sample settings files explicit, for example `settings.example.json`.
+settings.json
+app/settings.json
