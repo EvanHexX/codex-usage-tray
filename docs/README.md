@@ -1,39 +1,53 @@
-﻿# CodexUsageTray
+# Codex Usage Tray Notes
 
-CodexUsageTray는 Codex app-server의 rate limit 정보를 Windows tray popup으로 보여주는 개인 운영 도구다.
+Codex Usage Tray is a small Windows tray utility that shows Codex app-server rate limit information in a local popup.
 
-## 목적
+## Purpose
 
-- Codex 사용 중 남은 rate limit percent를 빠르게 확인한다.
-- Codex app이나 CLI 화면을 열지 않아도 5시간/1주 window 상태와 reset time을 본다.
-- `E:\Business`와 분리된 `E:\Tools` 아래에 두어 business project와 개인 운영 도구를 섞지 않는다.
+- Check remaining Codex rate limit percentage quickly.
+- View the short-window and weekly-window reset status without keeping a Codex app, CLI, or dashboard view open.
+- Keep the tool as a lightweight local utility rather than a general analytics or telemetry app.
 
-## 실행
+## Run
 
 ```powershell
-cd E:\Tools\CodexUsageTray\app
+cd app
 dotnet run
 ```
 
-PowerShell execution policy 때문에 `codex.ps1` shim이 막히는 환경에서는 앱이 내부적으로 `cmd.exe /c codex app-server`를 사용한다.
+Or from the repository root:
 
-## Codex 연결
+```powershell
+dotnet run --project app/CodexUsageTray.csproj
+```
 
-현재 앱은 별도 API key를 직접 쓰지 않는다.
+For the built-in mapper self-test:
 
-1. 앱이 `cmd.exe /c codex app-server`를 child process로 실행한다.
-2. stdio JSON-RPC로 `initialize`를 보낸다.
-3. `account/rateLimits/read`를 호출한다.
-4. `account/rateLimits/updated` notification을 받으면 UI를 갱신한다.
+```powershell
+dotnet run --project app/CodexUsageTray.csproj -- --self-test
+```
 
-## UI
+In PowerShell environments where the `codex.ps1` shim is blocked by execution policy, the app resolves the Codex command through `cmd.exe /c codex app-server`.
 
-- tray icon click: popup 열기/닫기
-- `Ctrl+Alt+U`: popup 열기/닫기
-- 우측 상단 pin icon: pinned 상태를 토글한다.
-- pinned 상태에서는 popup이 항상 위에 있고, focus를 잃거나 `Esc`를 눌러도 자동으로 닫히지 않는다.
-- 상단 header 영역은 drag handle이며 borderless popup을 이동하는 데 사용한다.
-- tray icon 또는 열린 popup에서 우클릭하면 같은 menu를 연다:
+## Codex connection
+
+The app does not directly use a separate OpenAI API key.
+
+Current flow:
+
+1. Start `codex app-server` as a child process.
+2. Send `initialize` over stdio JSON-RPC.
+3. Call `account/rateLimits/read`.
+4. Listen for `account/rateLimits/updated` notifications and refresh the UI.
+
+## UI behavior
+
+- Tray icon click: open/close popup.
+- `Ctrl+Alt+U`: open/close popup.
+- Top-right pin icon: toggle pinned mode.
+- Pinned mode keeps the popup topmost and prevents auto-close on focus loss or `Esc`.
+- The header area is a drag handle for moving the borderless popup.
+- Right-clicking the tray icon or opened popup shows the same menu:
   - `Refresh`
   - `Toggle`
   - `Settings > Codex Connection > Reconnect`
@@ -43,19 +57,20 @@ PowerShell execution policy 때문에 `codex.ps1` shim이 막히는 환경에서
   - `Settings > Shape Theme`
   - `Settings > Color Theme`
   - `Exit`
-- popup은 titlebar 없는 dark/glass style이다.
-- color theme은 `Dark Blue Purple`과 `Glassmorphism`을 지원한다.
-- 가장 바깥쪽 canvas는 transparent key로 투명하게 처리한다.
-- 표시 정보는 기본적으로 `5h`, `1w` 두 window를 사용한다. `Spark 5h`, `Spark 1w`는 setting에서 선택적으로 표시한다.
-- user-visible popup labels and connection status messages are written in English.
-- popup의 time text를 클릭하면 `Clock Time`과 `Remaining Time` 표시가 전환된다.
-- `Bento Circles` theme은 좌상단 label, 중앙 large circular gauge, 하단 reset/remaining time 구조의 taller card layout을 사용한다. Spark 표시가 켜지면 2x2 circle layout을 사용한다.
-- 기본 font는 Pretendard/Pretendard Variable을 우선 사용하고, 설치되어 있지 않으면 Segoe UI로 fallback한다.
-- DPI 흐림 방지를 위해 앱 시작 시 `Application.SetHighDpiMode(HighDpiMode.PerMonitorV2)`를 설정한다.
+- The popup is a titlebarless dark/glass-style window.
+- Color themes currently include `Dark Blue Purple` and `Glassmorphism`.
+- The outer canvas uses a transparency key.
+- Default usage rows are `5h` and `1w`.
+- `Spark 5h` and `Spark 1w` are optional rows.
+- User-visible popup labels and connection status messages are written in English.
+- Clicking the time text toggles between `Clock Time` and `Remaining Time` display.
+- `Bento Circles` uses a taller circular gauge card layout. If Spark rows are enabled, it uses a 2x2 circle layout.
+- The preferred font is Pretendard/Pretendard Variable, with Segoe UI fallback.
+- The app sets `Application.SetHighDpiMode(HighDpiMode.PerMonitorV2)` at startup to reduce DPI blur.
 
-## 설정
+## Settings
 
-앱 실행 폴더의 `settings.json`이 있으면 읽는다. 없으면 기본값을 사용한다. Settings menu에서 위치나 theme을 고르면 이 파일에 저장된다.
+The current app stores `settings.json` next to the running app output. If the file does not exist, defaults are used.
 
 ```json
 {
@@ -73,11 +88,12 @@ PowerShell execution policy 때문에 `codex.ps1` shim이 막히는 환경에서
 }
 ```
 
-`timeDisplayMode`는 `ClockTime` 또는 `RemainingTime`을 사용한다.
+`timeDisplayMode` can be `ClockTime` or `RemainingTime`.
 
-현재 `hotkey` 문자열은 향후 변경 UI를 위한 준비값이며 실제 등록은 `Ctrl+Alt+U`로 고정한다.
+The `hotkey` setting currently exists for future UI support. Actual registration is fixed to `Ctrl+Alt+U`.
 
+## Related docs
 
-
-
-
+- `docs/PROJECT_MAP.md`: source file map by module.
+- `docs/MODERNIZATION_PLAN.md`: .NET/WinUI modernization plan.
+- `docs/modules/codex_rate_limits.md`: Codex app-server rate limit schema and mapping notes.
