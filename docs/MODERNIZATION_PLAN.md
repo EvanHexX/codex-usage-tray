@@ -1,6 +1,6 @@
 # Modernization Plan
 
-Last updated: 2026-06-20
+Last updated: 2026-06-21
 
 ## Current repository state
 
@@ -9,7 +9,7 @@ Codex Usage Tray is currently a small Windows tray utility. The implementation i
 Current technical baseline:
 
 - App project: `app/CodexUsageTray.csproj`
-- Current target: `net6.0-windows`
+- Current target: `net10.0-windows`
 - Current UI stack: Windows Forms
 - Current entry point: `app/Program.cs`
 - Current self-test path: `dotnet run --project app/CodexUsageTray.csproj -- --self-test`
@@ -89,12 +89,12 @@ Upgrade runtime support without changing UI architecture.
 
 Checklist:
 
-- [ ] Check installed SDKs with `dotnet --list-sdks`.
-- [ ] Install the selected modern .NET SDK if missing.
-- [ ] Change `app/CodexUsageTray.csproj` from `net6.0-windows` to the selected modern target, preferably `net10.0-windows`.
-- [ ] Keep `<UseWindowsForms>true</UseWindowsForms>`.
-- [ ] Run `dotnet build app/CodexUsageTray.csproj`.
-- [ ] Run `dotnet run --project app/CodexUsageTray.csproj -- --self-test`.
+- [x] Check installed SDKs with `dotnet --list-sdks`.
+- [x] Confirm the selected modern .NET SDK is available locally.
+- [x] Change `app/CodexUsageTray.csproj` from `net6.0-windows` to the selected modern target, preferably `net10.0-windows`.
+- [x] Keep `<UseWindowsForms>true</UseWindowsForms>`.
+- [x] Run `dotnet build app/CodexUsageTray.csproj`.
+- [x] Run `dotnet run --project app/CodexUsageTray.csproj -- --self-test`.
 - [ ] Run the Windows tray smoke test:
   - [ ] tray icon appears
   - [ ] popup opens from tray click
@@ -103,8 +103,8 @@ Checklist:
   - [ ] Reconnect works
   - [ ] pinned popup behavior works
   - [ ] settings persist after restart
-- [ ] Update `README.md` build requirements.
-- [ ] Update docs if target framework or commands changed.
+- [x] Update `README.md` build requirements.
+- [x] Update docs if target framework or commands changed.
 
 Exit criteria:
 
@@ -173,6 +173,8 @@ Exit criteria:
 Goal:
 
 Evaluate whether WinUI 3 improves the app enough to justify a rewrite.
+
+Status: TODO. Do not migrate the main Windows Forms app to WinUI 3 as part of the .NET target upgrade.
 
 Branch recommendation:
 

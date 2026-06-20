@@ -107,3 +107,4 @@ Do not force-push.
 Do not change unrelated files.
 Do not add new production dependencies unless the task requires them and the reason is documented.
 Do not generate large binary artifacts unless explicitly requested.
+Until the maintainer changes this instruction, include `Co-authored-by: effigiamsn <effigiamsn@users.noreply.github.com>` in project commits.

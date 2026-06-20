@@ -17,7 +17,9 @@ cd app
 dotnet run
 ```
 
-The app targets `net6.0-windows` and uses Windows Forms.
+The app targets `net10.0-windows` and uses Windows Forms.
+
+Local build requirement: install the .NET 10 SDK.
 
 ## Features
 
