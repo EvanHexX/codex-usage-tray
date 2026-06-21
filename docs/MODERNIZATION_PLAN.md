@@ -133,11 +133,11 @@ Polish the current Windows Forms app before the first public release.
 
 Checklist:
 
-- [ ] Clean up theme IDs and names without backward-compatibility migration.
-- [ ] Add a true black/dark theme.
-- [ ] Rename the current `Glassmorphism` theme to a more accurate name.
-- [ ] Add a new theme that is more genuinely glass-like within the current Windows Forms/GDI+ implementation limits.
-- [ ] Add an app icon and wire it to the executable and tray icon.
+- [x] Clean up theme IDs and names without backward-compatibility migration.
+- [x] Add a true black/dark theme.
+- [x] Rename the current `Glassmorphism` theme to a more accurate name.
+- [x] Add a new theme that is more genuinely glass-like within the current Windows Forms/GDI+ implementation limits.
+- [x] Add an app icon and wire it to the executable and tray icon.
 - [ ] Move default settings storage away from the app output folder to a per-user application data path if doing so remains simple.
 - [ ] Consider extracting Codex rate-limit reading behind an interface, but keep only the Codex provider implemented.
 - [ ] Avoid adding non-Codex providers until explicitly requested.

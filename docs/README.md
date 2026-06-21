@@ -58,7 +58,7 @@ Current flow:
   - `Settings > Color Theme`
   - `Exit`
 - The popup is a titlebarless dark/glass-style window.
-- Color themes currently include `Dark Blue Purple` and `Glassmorphism`.
+- Color themes currently include `DarkBluePurple`, `MidnightBlack`, `Nebula`, and `Glassmorphism`.
 - The outer canvas uses a transparency key.
 - Default usage rows are `5h` and `1w`.
 - `Spark 5h` and `Spark 1w` are optional rows.

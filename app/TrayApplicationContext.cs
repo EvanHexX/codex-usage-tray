@@ -26,7 +26,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         _notifyIcon = new NotifyIcon
         {
             Text = "Checking Codex usage",
-            Icon = TrayIconRenderer.CreateIcon(100, false),
+            Icon = TrayIconRenderer.CreateUsageIcon(100, false),
             Visible = true,
             ContextMenuStrip = BuildMenu()
         };
@@ -149,7 +149,9 @@ internal sealed class TrayApplicationContext : ApplicationContext
     private ToolStripMenuItem BuildColorThemeMenu()
     {
         var item = new ToolStripMenuItem("Color Theme");
-        AddSettingPreviewItem(item, "Dark Blue Purple", "ColorTheme", "DarkBluePurple");
+        AddSettingPreviewItem(item, "DarkBluePurple", "ColorTheme", "DarkBluePurple");
+        AddSettingPreviewItem(item, "MidnightBlack", "ColorTheme", "MidnightBlack");
+        AddSettingPreviewItem(item, "Nebula", "ColorTheme", "Nebula");
         AddSettingPreviewItem(item, "Glassmorphism", "ColorTheme", "Glassmorphism");
         return item;
     }
@@ -273,7 +275,9 @@ internal sealed class TrayApplicationContext : ApplicationContext
         _notifyIcon.Text = _settings.ShowSparkUsage
             ? $"Codex 5h {FormatPercent(usage.FiveHour)} / 1w {FormatPercent(usage.OneWeek)} / Spark 5h {FormatPercent(usage.SparkFiveHour)} / 1w {FormatPercent(usage.SparkOneWeek)}"
             : $"Codex 5h {FormatPercent(usage.FiveHour)} / 1w {FormatPercent(usage.OneWeek)}";
-        _notifyIcon.Icon = TrayIconRenderer.CreateIcon(usage.OverallRemainingPercent, low);
+        var oldIcon = _notifyIcon.Icon;
+        _notifyIcon.Icon = TrayIconRenderer.CreateUsageIcon(usage.OverallRemainingPercent, low);
+        oldIcon?.Dispose();
         popup.SetUsage(usage);
     }
 

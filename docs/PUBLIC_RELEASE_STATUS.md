@@ -8,6 +8,7 @@ Last updated: 2026-06-21
 - Added `docs/MODERNIZATION_PLAN.md` for .NET and optional WinUI 3 planning.
 - Refined `.gitignore` for .NET desktop build outputs, editor state, logs, and local settings.
 - Rewrote `docs/README.md` to remove maintainer-local absolute paths and make the notes more public-safe.
+- Polished Windows Forms theme IDs/names and added the app/executable icon.
 
 ## Current technical status
 

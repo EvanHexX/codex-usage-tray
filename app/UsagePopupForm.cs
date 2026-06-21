@@ -33,6 +33,7 @@ internal sealed class UsagePopupForm : Form
         ForeColor = Color.FromArgb(244, 247, 255);
         Font = new Font(UiFontFamily, 10f, FontStyle.Regular, GraphicsUnit.Point);
         Text = "Codex Usage";
+        Icon = TrayIconRenderer.CreateAppIcon();
         DoubleBuffered = true;
         KeyPreview = true;
         Deactivate += (_, _) => { if (!_settings.IsPinned) Hide(); };
@@ -354,9 +355,13 @@ internal sealed record PopupPalette(Color Background, Color Card, Color Row, Col
 {
     public static PopupPalette FromTheme(string? theme)
     {
-        return string.Equals(theme, "Glassmorphism", StringComparison.OrdinalIgnoreCase)
-            ? Glassmorphism
-            : DarkBluePurple;
+        return theme?.ToUpperInvariant() switch
+        {
+            "MIDNIGHTBLACK" => MidnightBlack,
+            "NEBULA" => Nebula,
+            "GLASSMORPHISM" => Glassmorphism,
+            _ => DarkBluePurple
+        };
     }
 
     public static PopupPalette DarkBluePurple => new(
@@ -370,7 +375,18 @@ internal sealed record PopupPalette(Color Background, Color Card, Color Row, Col
         Color.FromArgb(68, 154, 255),
         Color.FromArgb(156, 104, 255));
 
-    public static PopupPalette Glassmorphism => new(
+    public static PopupPalette MidnightBlack => new(
+        Color.FromArgb(0, 0, 0),
+        Color.FromArgb(5, 5, 7),
+        Color.FromArgb(13, 13, 17),
+        Color.FromArgb(46, 46, 54),
+        Color.FromArgb(33, 33, 39),
+        Color.FromArgb(248, 248, 250),
+        Color.FromArgb(178, 180, 188),
+        Color.FromArgb(75, 180, 255),
+        Color.FromArgb(134, 116, 255));
+
+    public static PopupPalette Nebula => new(
         Color.FromArgb(8, 12, 24),
         Color.FromArgb(34, 38, 66),
         Color.FromArgb(42, 48, 82),
@@ -380,6 +396,17 @@ internal sealed record PopupPalette(Color Background, Color Card, Color Row, Col
         Color.FromArgb(188, 199, 229),
         Color.FromArgb(74, 166, 255),
         Color.FromArgb(182, 118, 255));
+
+    public static PopupPalette Glassmorphism => new(
+        Color.FromArgb(10, 16, 28),
+        Color.FromArgb(30, 46, 66),
+        Color.FromArgb(39, 58, 80),
+        Color.FromArgb(146, 179, 214),
+        Color.FromArgb(62, 82, 108),
+        Color.FromArgb(252, 254, 255),
+        Color.FromArgb(206, 222, 238),
+        Color.FromArgb(92, 196, 255),
+        Color.FromArgb(176, 146, 255));
 }
 
 internal static class GraphicsExtensions
