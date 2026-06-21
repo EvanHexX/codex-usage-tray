@@ -64,11 +64,19 @@ The preferred modernization path is:
 
 1. public-repo hygiene and documentation
 2. Windows Forms app on a supported modern .NET LTS target
-3. architecture/test hardening
+3. pre-release polish and settings cleanup
 4. public release packaging
 5. optional WinUI 3 prototype only after the current app is stable
 
-Do not migrate to WinUI 3 in the same task as a .NET target upgrade. Treat WinUI 3 as a separate prototype/rewrite phase with its own branch and parity checklist.
+Do not migrate to WinUI 3 in the same task as .NET/theme/icon/README polish. Treat WinUI 3 as a separate prototype/rewrite phase with its own branch and parity checklist.
+
+## Pre-release compatibility policy
+
+There has not been a public release or external download yet.
+
+Until the first tagged public release, compatibility with old local settings, theme IDs, names, screenshots, or internal option strings is not required. Prefer clean names and simple code over migration code.
+
+After the first tagged public release, breaking changes to settings, theme IDs, command-line behavior, or persisted app data should be treated as compatibility-sensitive and documented.
 
 ## Public repository safety
 
@@ -80,7 +88,7 @@ Never commit:
 - generated build outputs such as `bin/`, `obj/`, publish folders, or local installer artifacts
 - telemetry, analytics, or remote logging without explicit approval
 
-Settings should remain local. If settings storage changes, prefer a per-user application data location and document the migration behavior.
+Settings should remain local. If settings storage changes before the first tagged public release, no compatibility migration is required unless the maintainer explicitly requests it.
 
 ## Branding and trademark safety
 
