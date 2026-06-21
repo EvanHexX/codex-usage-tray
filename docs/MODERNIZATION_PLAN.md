@@ -19,9 +19,9 @@ Current technical baseline:
 
 ### Recommended near-term direction
 
-Keep the app on Windows Forms for the first public release, but move the target framework from `.NET 6` to a supported modern .NET LTS release.
+Keep the app on Windows Forms for the first public release, using the current modern .NET target.
 
-Recommended near-term target:
+Current near-term target:
 
 ```xml
 <TargetFramework>net10.0-windows</TargetFramework>
@@ -33,7 +33,15 @@ Rationale:
 - `.NET 6` is out of support.
 - `.NET 10` is an LTS release with a longer support window.
 - The current UI is already a custom tray/popup implementation using Windows Forms, `NotifyIcon`, GDI+ drawing, and Win32-style hotkey/window behavior.
-- A .NET target upgrade is much smaller and safer than a UI framework rewrite.
+- A .NET target upgrade was much smaller and safer than a UI framework rewrite.
+
+### Pre-release compatibility policy
+
+There has not been a public release or external download yet.
+
+Until the first tagged public release, compatibility with old local settings, theme IDs, names, screenshots, or internal option strings is not required. Prefer clean names and simple code over migration code.
+
+After the first tagged public release, breaking changes to settings, theme IDs, command-line behavior, or persisted app data should be treated as compatibility-sensitive and documented.
 
 ### WinUI 3 decision
 
@@ -69,9 +77,9 @@ Checklist:
 
 - [x] Add `AGENTS.md` for Codex working rules.
 - [x] Add this modernization plan.
-- [ ] Add or verify `.gitignore` for .NET, Visual Studio, logs, and local settings.
+- [x] Add or verify `.gitignore` for .NET, Visual Studio, logs, and local settings.
 - [ ] Add a license file before promoting the repository publicly.
-- [ ] Remove or avoid maintainer-local absolute paths from docs.
+- [x] Remove or avoid maintainer-local absolute paths from docs.
 - [ ] Add public README sections for installation, usage, privacy, limitations, and disclaimer.
 - [ ] Add screenshots only after redacting private account information.
 
@@ -117,26 +125,30 @@ Rollback:
 
 - Revert only the target-framework change and any directly related documentation updates.
 
-## Phase 2 — Settings and architecture hardening
+## Phase 2 — Pre-release polish and settings cleanup
 
 Goal:
 
-Make the app safer and easier to maintain before packaging/release work.
+Polish the current Windows Forms app before the first public release.
 
 Checklist:
 
-- [ ] Move default settings storage away from the app output folder to a per-user application data path.
-- [ ] Preserve backward compatibility by reading existing output-folder `settings.json` if present.
-- [ ] Add a small settings migration note to docs.
+- [ ] Clean up theme IDs and names without backward-compatibility migration.
+- [ ] Add a true black/dark theme.
+- [ ] Rename the current `Glassmorphism` theme to a more accurate name.
+- [ ] Add a new theme that is more genuinely glass-like within the current Windows Forms/GDI+ implementation limits.
+- [ ] Add an app icon and wire it to the executable and tray icon.
+- [ ] Move default settings storage away from the app output folder to a per-user application data path if doing so remains simple.
 - [ ] Consider extracting Codex rate-limit reading behind an interface, but keep only the Codex provider implemented.
 - [ ] Avoid adding non-Codex providers until explicitly requested.
-- [ ] Add unit-test project or keep the current self-test if a full test project is not worth the overhead yet.
+- [ ] Add unit tests or keep the current self-test if a full test project is not worth the overhead yet.
 - [ ] Add validation for unusual/missing Codex app-server payload fields.
 - [ ] Improve error messages for missing `codex`, expired login, app-server timeout, and JSON-RPC errors.
 
 Exit criteria:
 
-- Settings are stored in a user-safe location.
+- Theme names are clean and not misleading.
+- App icon appears correctly where the current app architecture supports it.
 - Failure states are clearer for users.
 - Provider-ready structure exists only where it improves maintainability.
 
@@ -174,7 +186,7 @@ Goal:
 
 Evaluate whether WinUI 3 improves the app enough to justify a rewrite.
 
-Status: TODO. Do not migrate the main Windows Forms app to WinUI 3 as part of the .NET target upgrade.
+Status: TODO. Do not migrate the main Windows Forms app to WinUI 3 as part of pre-release polish.
 
 Branch recommendation:
 
@@ -200,12 +212,11 @@ WinUI 3 migration can replace the main app only if all parity items pass and the
 Use small tasks like these:
 
 1. "Audit public repo hygiene and report only. Do not modify files."
-2. "Add or refine .gitignore for a .NET Windows desktop app. Do not change source code."
-3. "Upgrade the Windows Forms project from net6.0-windows to net10.0-windows. Run build and self-test. Do not change UI framework."
-4. "Move settings storage to per-user AppData with backward-compatible migration. Keep UI behavior unchanged."
-5. "Add GitHub Actions build workflow for Windows. Do not publish artifacts yet."
-6. "Draft README sections for install, usage, privacy, limitations, and disclaimer using provided screenshots."
-7. "Create a separate WinUI 3 prototype branch and report feasibility. Do not merge into main."
+2. "Polish the existing Windows Forms app: clean theme names, add a black theme, add a more glass-like theme, and add the app icon. No WinUI 3 migration. No backward-compatibility migration required before first public release."
+3. "Move settings storage to per-user AppData if it stays simple. No migration required before first public release."
+4. "Add GitHub Actions build workflow for Windows. Do not publish artifacts yet."
+5. "Draft README sections for install, usage, privacy, limitations, and disclaimer using provided screenshots."
+6. "Create a separate WinUI 3 prototype branch and report feasibility. Do not merge into main."
 
 ## Source notes
 
