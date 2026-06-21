@@ -1,50 +1,36 @@
+<p align="right"><a href="README.ko.md">🇰🇷 한국어 README</a></p>
+
 # Codex Usage Tray
 
-Codex Usage Tray is a small Windows tray utility for monitoring Codex app-server rate limit status without keeping the Codex app, CLI, or dashboard view open.
+![Platform](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)
+![UI](https://img.shields.io/badge/UI-Windows%20Forms-5C2D91)
+![Codex](https://img.shields.io/badge/Codex-app--server-111827)
+![Privacy](https://img.shields.io/badge/privacy-local--only-10B981)
+![Status](https://img.shields.io/badge/status-unofficial-6B7280)
 
-The current release target is a lightweight Windows Forms version. After the WinForms release is stabilized, the project is planned to move to a WinUI 3 implementation.
+Codex Usage Tray is a small Windows tray utility for checking Codex usage limits without keeping the Codex app, CLI, or dashboard view open.
 
-> Current product direction: keep the WinForms version small, clear, and practical; remove the experimental Glassmorphism theme before release; then use the release as the baseline for a WinUI 3 port.
+It runs locally, starts `codex app-server`, reads Codex rate limit data through stdio JSON-RPC, and shows the result in a compact tray popup.
 
-## What it does
+## Screenshots
 
-Codex Usage Tray runs locally, starts `codex app-server`, reads the current Codex rate limit data through stdio JSON-RPC, and displays the result in a compact tray popup.
-
-It is designed for people who use Codex frequently and want a quick view of remaining usage windows while working.
+| Codex + Spark usage | Codex usage only |
+|---|---|
+| <img src="docs/images/usage-with-spark.svg" alt="Codex Usage Tray showing Codex and Spark usage windows" width="347"> | <img src="docs/images/usage-codex-only.svg" alt="Codex Usage Tray showing only Codex usage windows" width="350"> |
 
 ## Features
 
 - Windows system tray utility
-- Compact popup for Codex usage windows
-- 5-hour and 1-week usage gauges
+- Compact usage popup
+- 5-hour and 1-week Codex usage gauges
 - Optional Spark usage gauges
 - Pinned popup mode
 - Global hotkey: `Ctrl+Alt+U`
 - Manual refresh and reconnect controls
 - Position, time display, shape theme, and color theme settings
-- Local `settings.json` persistence
-- No separate OpenAI API key required
-
-## Current UI
-
-The current WinForms UI is a compact dark tray popup with circular usage cards.
-
-Default rows:
-
-- `5h`
-- `1w`
-
-Optional Spark rows:
-
-- `Spark 5h`
-- `Spark 1w`
-
-The popup supports two common layouts:
-
-- Standard Codex usage only: 2 cards
-- Codex + Spark usage: 4 cards
-
-The current UI is intentionally simple and will be used as the functional baseline before the WinUI 3 port.
+- Local settings persistence
+- No separate credential required
 
 ## How it works
 
@@ -54,7 +40,7 @@ The current UI is intentionally simple and will be used as the functional baseli
 4. It listens for `account/rateLimits/updated` notifications.
 5. The tray popup updates when new rate limit data arrives.
 
-This app uses the local Codex runtime session. It does not ask for or store a separate OpenAI API key.
+The app uses the local Codex runtime session and does not collect telemetry.
 
 ## Requirements
 
@@ -62,7 +48,7 @@ This app uses the local Codex runtime session. It does not ask for or store a se
 - Codex CLI / Codex app-server available through the `codex` command
 - .NET 10 SDK for local development
 
-The current project targets:
+Current project target:
 
 ```text
 net10.0-windows
@@ -90,15 +76,20 @@ Run the built-in mapper self-test:
 dotnet run --project app/CodexUsageTray.csproj -- --self-test
 ```
 
+## Usage
+
+- Left-click the tray icon to open or close the popup.
+- Press `Ctrl+Alt+U` to toggle the popup.
+- Use the pin button to keep the popup open.
+- Right-click the tray icon or popup to open the menu.
+- Use `Settings > Usage Rows > GPT-5.3 Spark` to show or hide Spark rows.
+- Click the time text to switch between clock time and remaining time.
+
 ## Settings
 
-The app stores local settings next to the running app output:
+The app stores local settings in `settings.json`.
 
-```text
-settings.json
-```
-
-Example settings:
+Example:
 
 ```json
 {
@@ -122,29 +113,38 @@ Notes:
 - `showSparkUsage` enables the Spark rows.
 - The `hotkey` setting exists in the settings file, but the current registered hotkey is fixed to `Ctrl+Alt+U`.
 
+## Privacy
+
+Codex Usage Tray is designed as a local utility.
+
+- It launches the local `codex app-server` process.
+- It communicates with that process over stdio JSON-RPC.
+- It does not include telemetry, analytics, or remote logging.
+- It stores settings locally.
+
 ## Current limitations
 
 - Windows-only.
-- The current UI is Windows Forms, not WinUI 3.
+- The current UI is Windows Forms.
 - The app depends on Codex app-server behavior and available rate limit fields.
 - It is a local tray utility, not a cloud dashboard or analytics product.
-- Settings are stored locally in the app output folder.
+- Packaging and installer distribution are not finalized yet.
 
 ## Roadmap
 
 Near-term:
 
-1. Remove the experimental Glassmorphism theme.
-2. Finalize the current Windows Forms release.
-3. Improve README, release notes, and screenshots.
-4. Tag a WinForms baseline release.
+1. Stabilize the current Windows desktop tray experience.
+2. Improve app icon, screenshots, README, and release notes.
+3. Add a reproducible Windows build workflow.
+4. Prepare a first tagged release.
 
-Next major step:
+Next major UI direction:
 
-1. Port the UI to WinUI 3.
+1. Evaluate or implement a WinUI 3 port.
 2. Keep the Codex app-server integration and rate limit mapping behavior stable.
-3. Rebuild the UI with a more maintainable native Windows app structure.
-4. Re-evaluate packaging and distribution after the WinUI 3 port.
+3. Rebuild the UI with a more modern native Windows app structure.
+4. Re-evaluate packaging and distribution after the UI direction is settled.
 
 Possible future rename:
 
@@ -160,7 +160,3 @@ Project notes live under `docs/`.
 - `docs/PROJECT_MAP.md`: module and file map
 - `docs/MODERNIZATION_PLAN.md`: .NET / WinUI modernization plan
 - `docs/modules/codex_rate_limits.md`: Codex app-server rate limit schema and mapping notes
-
-## Korean README
-
-한국어 README는 [`README.ko.md`](README.ko.md)를 참고하세요.
